@@ -7,6 +7,7 @@ import com.entities.Request;
 
 public class SlidingWindowImpl implements RateLimiter{
 	
+	//Assuming we are implementing this rate limiter for one type of request for now
 	private Queue<Request> requestQueue;
 	private int allowedLimit;
 	private int timeFrameinSeconds;
