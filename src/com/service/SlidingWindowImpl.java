@@ -4,12 +4,12 @@ import java.time.LocalDateTime;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import com.entities.RateLimitingState;
+import com.entities.SlidingWindowRateLimitingState;
 import com.entities.Request;
 
 public class SlidingWindowImpl implements RateLimiter{
 	
-	Map<Integer, RateLimitingState> requestStates;
+	Map<Integer, SlidingWindowRateLimitingState> requestStates;
 	private int allowedLimit;
 	private int timeFrameinSeconds;
 	
@@ -20,8 +20,8 @@ public class SlidingWindowImpl implements RateLimiter{
 	}
 	
 	public boolean isRequestAllowed(Request request) {
-		requestStates.putIfAbsent(request.client(), new RateLimitingState());
-		RateLimitingState state=requestStates.get(request.client());
+		requestStates.putIfAbsent(request.client(), new SlidingWindowRateLimitingState());
+		SlidingWindowRateLimitingState state=requestStates.get(request.client());
 		state.evictOldRequests(timeFrameinSeconds);
 		if(state.isSpaceAvailble(allowedLimit)) {
 			state.addRequest(LocalDateTime.now());

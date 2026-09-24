@@ -4,11 +4,11 @@ import java.time.LocalDateTime;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-public class RateLimitingState {
+public class SlidingWindowRateLimitingState {
 
 	private Queue<LocalDateTime> q;
 	
-	public RateLimitingState() {
+	public SlidingWindowRateLimitingState() {
 		q=new ConcurrentLinkedQueue<LocalDateTime>();
 	}
 	
