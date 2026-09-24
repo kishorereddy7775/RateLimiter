@@ -1,36 +1,33 @@
 package com.service;
 
-import java.util.ArrayDeque;
-import java.util.Queue;
+import java.time.LocalDateTime;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
+import com.entities.RateLimitingState;
 import com.entities.Request;
 
 public class SlidingWindowImpl implements RateLimiter{
 	
-	//Assuming we are implementing this rate limiter for one type of request for now
-	private Queue<Request> requestQueue;
+	Map<Integer, RateLimitingState> requestStates;
 	private int allowedLimit;
 	private int timeFrameinSeconds;
 	
 	public SlidingWindowImpl(int limit, int timeFrame) {
-		requestQueue = new ArrayDeque<>();
+		requestStates = new ConcurrentHashMap<>();
 		allowedLimit=limit;
 		timeFrameinSeconds=timeFrame;
-		
 	}
 	
 	public boolean isRequestAllowed(Request request) {
-		evictOldRequests(request);
-		if(requestQueue.size()<allowedLimit) {
-			requestQueue.add(request);
+		requestStates.putIfAbsent(request.client(), new RateLimitingState());
+		RateLimitingState state=requestStates.get(request.client());
+		state.evictOldRequests(timeFrameinSeconds);
+		if(state.isSpaceAvailble(allowedLimit)) {
+			state.addRequest(LocalDateTime.now());
 			return true;
 		}
 		return false;
 	}
 	
-	private void evictOldRequests(Request request) {
-		while(!requestQueue.isEmpty() && requestQueue.peek().timeStamp().isBefore(request.timeStamp().minusSeconds(timeFrameinSeconds))) {
-			requestQueue.poll();
-		}
-	}
 }
