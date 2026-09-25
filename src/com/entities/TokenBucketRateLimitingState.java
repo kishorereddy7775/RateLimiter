@@ -25,7 +25,8 @@ public class TokenBucketRateLimitingState {
 		}
 		long diff=ChronoUnit.MINUTES.between(lastRefillTime,LocalDateTime.now());
 		int val=Math.min(tokens.get()+((int)diff*refillRate), capacity);
-		updateToken(val);
+		if(val>0)
+			updateToken(val);
 	}
 	
 	private synchronized void updateToken(int val) {

@@ -1,15 +1,15 @@
 package com.entities;
 
 import java.time.LocalDateTime;
+import java.util.ArrayDeque;
 import java.util.Queue;
-import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class SlidingWindowRateLimitingState {
 
 	private Queue<LocalDateTime> q;
 	
 	public SlidingWindowRateLimitingState() {
-		q=new ConcurrentLinkedQueue<LocalDateTime>();
+		q=new ArrayDeque<LocalDateTime>();
 	}
 	
 	public void addRequest(LocalDateTime current) {
