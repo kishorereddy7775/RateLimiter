@@ -22,8 +22,8 @@ public class SlidingWindowImpl implements RateLimiter{
 	public boolean isRequestAllowed(Request request) {
 		requestStates.putIfAbsent(request.client(), new SlidingWindowRateLimitingState());
 		SlidingWindowRateLimitingState state=requestStates.get(request.client());
-		state.evictOldRequests(timeFrameinSeconds);
 		synchronized (state) {
+			state.evictOldRequests(timeFrameinSeconds);
 			if(state.isSpaceAvailble(allowedLimit)) {
 				state.addRequest(LocalDateTime.now());
 				return true;

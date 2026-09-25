@@ -20,8 +20,8 @@ public class TokenBucketImpl implements RateLimiter {
 	public boolean isRequestAllowed(Request request) {
 		requestStates.putIfAbsent(request.client(), new TokenBucketRateLimitingState());
 		TokenBucketRateLimitingState currentState=requestStates.get(request.client());
-		currentState.refillToken(refillRate, capacity);
 		synchronized (currentState) {
+			currentState.refillToken(refillRate, capacity);
 			if(currentState.isTokenAvailable()) {
 				currentState.decrementToken();
 				return true;

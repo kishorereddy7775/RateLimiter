@@ -29,7 +29,7 @@ public class TokenBucketRateLimitingState {
 			updateToken(val);
 	}
 	
-	private synchronized void updateToken(int val) {
+	private void updateToken(int val) {
 		tokens.set(val);
 		lastRefillTime=LocalDateTime.now();
 	}
